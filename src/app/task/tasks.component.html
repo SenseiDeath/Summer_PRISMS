@@ -1,0 +1,445 @@
+
+
+<table class="table">
+    <tr *ngFor="let task of tasks">
+        <td style="padding-left: 1px">
+           
+                
+                
+                <h4 class="deployment-title" >{{task.metadata.Deployment_name}}</h4>
+           
+                <span class="deployment-id">{{task._id}}</span>           
+          <!---<tr><ngx-json-viewer [json]="task.metadata" [expanded]="true"></ngx-json-viewer>
+          </tr>-->
+          <div class="deployment-metadata">
+          <ul>
+              <li *ngFor="let item of getKeys(task.metadata);"><span class="key">{{item}}</span><span class="value">{{getValue(task.metadata[item])}}</span></li>
+              <!---<li *ngFor="let item of getKeys(task.metadata);">{{item}}: {{getValue(task.metadata[item])}}</li>-->
+              <li><button type="button" class="btn btn-light btn-sm" (click)="addMetadata(task._id)">Add metadata</button></li>
+
+              <div class="backdrop" [ngStyle]="{'display':display7}"></div>
+        <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display7}">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <!---<button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>-->
+                <h4 class="modal-title">Adding metadata</h4>
+              </div>
+              <div class="modal-body">
+                  <form #f="ngForm"  novalidate>
+                  <div *ngFor="let key of keys; let in=index" class="col-sm-3">
+                      <div class="form-group" >
+
+                          <div class="input-group">
+                              <div class="input-group-prepend">
+                                <div  class="input-group-text">
+                                  <i class="material-icons" (click)="deleteFieldValue(in)">close</i>
+                                </div>
+                              </div>
+                              <input type="text" [(ngModel)]="keys[in].value" name="name_1{{in}}"  #name="ngModel" required />
+                              <input type="text" [(ngModel)]="values[in].value" name="name_2{{in}}"  #name="ngModel" required />
+                                                         
+                            </div>                          
+                       <!--<label class="control-label"> Key: </label> <input type="text" [(ngModel)]="keys[in].value" name="name_1{{in}}"  #name="ngModel" required />
+                       <label class="control-label"> Value: </label> <input type="text" [(ngModel)]="values[in].value" name="name_2{{in}}"  #name="ngModel" required />
+                      
+                        <p [hidden]="words2[in].value">Field is required</p>
+                        
+                        {{formRef.form.name1}}-->
+                      </div>
+                  </div>
+                <button  class="btn btn-light btn-sm" (click)="add_1()">Add</button>
+                </form>
+                                       
+                </div>
+                      
+                    <div class="modal-footer">
+                            <!---<button class="btn btn-danger" title="delete task" (click)="delete(task)">Delete</button>-->
+                            <button class="btn btn-success" (click)="onAddMetadatafunc(f)">Add</button>
+                            <button type="button" class="btn btn-default" (click)="onAddMetadataCloseHandled()" >Close</button>
+                        </div><!-- /.modal-content -->
+                      </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+                    
+        </div>
+              </ul>
+          </div>
+
+
+          <div class="sensors">
+              <h3 >Sensors</h3>
+          <tr *ngFor="let sensor of task.sensors | keyvalue ">
+              <div class="sensor">
+              <!----Object Key:{{sensor.key}} and Object Value:{{sensor.value}}-->
+              <div class = "sensor-title" *ngIf="sensor.value.sensor_name else loading">
+                   <h5  style="padding-left: 15px">{{sensor.value.sensor_name}}</h5>
+                   <span class="sensor-id">({{sensor.key}})</span>
+              </div>
+              <!---<div class = "sensor-title" *ngIf="sensor.value.location">
+                  <h6>{{sensor.value.location}}</h6>
+                  <h6>Important Measurement: {{sensor.value.important_measurement}}</h6>
+                  <span class="sensor-id">{{sensor.key}}</span>
+                </div>-->
+
+              <ng-template #loading>
+                  <div>{{sensor.key}}</div>
+                 </ng-template>
+                 <div class="sensor-metadata">
+            <ul>
+                <li><span class="key" >Location</span><span class="value"  >{{sensor.value.location}}</span></li>
+                <li><span class="key">Important measurement</span><span class="value" >{{sensor.value.important_measurement}}</span></li>
+                <li *ngFor="let item of getKeys(sensor.value);"><span class="key">{{item}}</span><span class="value">{{getValue(sensor.value[item])}}</span></li>
+                <li><button type="button" class="btn btn-light btn-sm" (click)="addMetadataSens(sensor.key, task._id)">Add metadata</button></li>
+                <!---<li style="color:cadetblue" *ngFor="let item of getKeys(sensor.value);">{{item}}
+                                    : {{getValue(sensor.value[item])}}</li>-->
+                  <div class="backdrop" [ngStyle]="{'display':display8}"></div>
+                  <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display8}">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <!---<button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>-->
+                          <h4 class="modal-title">Adding metadata</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form #f="ngForm"  novalidate>
+                            <div *ngFor="let key of keys; let in=index" class="col-sm-3">
+                                <div class="form-group" >
+          
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                          <div  class="input-group-text" style="background-color: transparent">
+                                            <i class="material-icons" (click)="deleteFieldValue(in)">close</i>
+                                            <mat-form-field class="metadata-sensor-key">
+                                              <mat-select>
+                                                <mat-option *ngFor="let option of options" [value]="option.value">
+                                                  {{option.viewValue}}
+                                                </mat-option>
+                                              </mat-select>
+                                              
+                                              <input matInput type="text" [(ngModel)]="keys[in].value" name="name_1{{in}}"  #name="ngModel" placeholder="Key"/>
+                                            </mat-form-field>
+                                            <mat-form-field class="metadata-sensor-value">
+                                              <input matInput type="text" [(ngModel)]="values[in].value" name="name_2{{in}}"  #name="ngModel" placeholder="Value"/>  
+                                            </mat-form-field>
+
+                                      </div>
+                                    </div>
+                                        
+                                        <!-- <input type="text" [(ngModel)]="keys[in].value" name="name_1{{in}}"  #name="ngModel" required />
+                                        <input type="text" [(ngModel)]="values[in].value" name="name_2{{in}}"  #name="ngModel" required /> -->
+                                                                    
+                                      </div>                          
+                                  <!--<label class="control-label"> Key: </label> <input type="text" [(ngModel)]="keys[in].value" name="name_1{{in}}"  #name="ngModel" required />
+                                  <label class="control-label"> Value: </label> <input type="text" [(ngModel)]="values[in].value" name="name_2{{in}}"  #name="ngModel" required />
+                                
+                                  <p [hidden]="words2[in].value">Field is required</p>
+                                  
+                                  {{formRef.form.name1}}-->
+                                </div>
+                            </div>
+                          <button  class="btn btn-light btn-sm" (click)="add_1()">Add</button>
+                          </form>
+                                                  
+                          </div>
+                                
+                              <div class="modal-footer">
+                                      <!---<button class="btn btn-danger" title="delete task" (click)="delete(task)">Delete</button>-->
+                                      <button class="btn btn-success" (click)="onAddMetadataSensFunc(f)">Add</button>
+                                      <button type="button" class="btn btn-default" (click)="onAddMetadataSensCloseHandled()" >Close</button>
+                                  </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                              </div><!-- /.modal -->
+                              
+                  </div>
+                            
+                </ul>
+                </div>
+               </div>
+                 
+                 <!---<span [innerHTML]="getKeys(sensor.value)"></span>
+                  {{getKeys(sensor.value)}} 
+                <h5> <ngx-json-viewer [json]="sensor.value" [expanded]="true" contenteditable='false'></ngx-json-viewer></h5>-->
+    
+                                <!---<tr *ngFor="let sensors of task.sensors | keyvalue; let i = index">
+                          {{sensors | json}}
+                      
+                        Object Key:{{sensors.key}} and Object Value:{{sensors.value}}-->
+                   
+         <i class="material-icons" (click)="openUpdateModal(sensor.key, sensor.value, task._id)">build</i>
+        <div class="backdrop" [ngStyle]="{'display':display6}" style="background-color:rgba(0, 0, 0, 0.15);"></div>
+        <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display6}" style="overflow-y: auto; max-height: 100%">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <!---<button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>-->
+                <h4 class="modal-title">Updating the sensor data.</h4>
+              </div>
+              <div class="modal-body">
+                  <form #f="ngForm" (ngSubmit)="onUpdatefunc(f)" novalidate>
+                      <div class="form-group">
+                          <!--- <label for="txtDevice" class="control-label">Sensor Name </label><br/>
+                          <input name="sensor_name" ngModel required #sensor_name="ngModel" placeholder={{update_id}}>
+            
+                
+                         <input type="text" class="form-control" ng-model="info.name" id="txtDevice">-->
+                      </div>
+                      <div class="form-group" *ngFor="let key of update_keys; let in=index" >
+                          <label for="txtIP" class="control-label">{{update_keys[in]}}</label><br/>
+                          <input type = "text" name="{{update_keys[in]}}" ngModel required #update_key[in]="ngModel"  dynamic-name   placeholder = "{{update_values[in]}}" />
+                          
+                          <!---<input type="text" class="form-control" formControlName="lastName" required>
+                          <input type="text" class="form-control" ng-model="info.location" id="txtIP">-->
+                      </div>
+                       <!---<div class="form-group">
+                          <label for="txtmeasurement" class="control-label">Important Measurement</label><br/>
+                          <input name="important_measurement" ngModel required #important_measurement="ngModel" placeholder={{sensor.value.important_measurement}}>
+                         <input type="text" class="form-control" ng-model="info.name" id="txtDevice">
+                      </div>-->
+                      <!--- <button type="button" class="btn btn-light btn-sm" (click)="show = !show">{{show ? 'Close' : 'Update Metadata'}}</button>
+                       show = {{show}}
+                        <br>
+                        <div *ngIf="show" >
+
+                          Show the metadata for the sensor to update.</div>-->
+                          <button class="btn btn-success">Update</button>
+                        </form>
+                        </div>
+                    <div class="modal-footer">
+                            <!---<button class="btn btn-danger" title="delete task" (click)="delete(task)">Delete</button>-->
+                            
+                            <button type="button" class="btn btn-default" (click)="onUpdateCloseHandled()" >Close</button>
+                      
+                          </div>
+                        </div><!-- /.modal-content -->
+                      </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+                  
+
+
+         <i class="material-icons" (click)="opeMoveModal(sensor.key, sensor.value, task._id)">autorenew</i>
+       
+        <div class="backdrop" [ngStyle]="{'display':display5}"></div>
+        <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display5}">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <!---<button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>-->
+                    <h4 class="modal-title">To which deployment you want to move?</h4>
+                  </div>
+                  <div class="modal-body">
+                      <div class="form-group">
+                          <label for="inputdefault" class="control-label col-sm-2">List of deployments</label>
+                           <div class="col-sm-10">
+                      
+                              <select class="form-control" id="inputdefault" name = "portal" #portalSelect>
+                                  <option *ngFor="let c of tasks">{{c.metadata.Deployment_name}}: {{c._id}}</option>
+                              </select>
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <div class="col-sm-offset-2 col-sm-10">
+                              <button type="button" class="btn btn-primary" (click)="apply(portalSelect.value)">Apply</button>                    
+                              <button type="button" class="btn btn-default" (click)="onMoveCloseHandled()" >Close</button>
+                          </div>
+                      </div>
+
+
+
+
+                  </div>
+  
+
+        </div>
+        </div>
+        </div>
+       <i class="material-icons" (click)="openDeleteModal(sensor.key, task._id)">delete</i>
+        <div class="backdrop" [ngStyle]="{'display':display1}"></div>
+<div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display1}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!---<button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>-->
+        <h4 class="modal-title">Are you sure you want to delete a sensor?</h4>
+      </div>
+      <div class="modal-body">
+            <form>
+                <div class="form-group">
+                    <label for="sensorID" class="control-label">Are you sure you want to delete this sensor?</label><br/>
+                    <!---<input name="sid" ngModel required #sid ="ngModel">-->
+                    <!---<input type="text" class="form-control" ng-model="info.name" id="txtDevice">-->
+                </div>
+                <button class="btn btn-danger" title="delete task" (click)="delete_sensor()">Delete</button>
+                </form>
+                </div>
+            <div class="modal-footer">
+                    <!---<button class="btn btn-danger" title="delete task" (click)="delete(task)">Delete</button>-->
+                    <button type="button" class="btn btn-default" (click)="onDeleteCloseHandled()" >Close</button>
+              
+                  </div>
+                </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+      
+      
+      </tr>
+    </div>
+      <i style="color:blue">Add Sensor    </i>
+      <i class="material-icons" (click)="openSaveModal(task._id)">add_circle</i>
+      <!---<button type="button" class="btn btn-success bt-lg btn-block" (click)="openSaveModal(task._id)" >Add Sensor Data</button>-->
+
+
+      <div class="backdrop" [ngStyle]="{'display':display3}"></div>
+      <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display3}" style="overflow-y: auto; max-height:700px;">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <!---<button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>-->
+              <h4 class="modal-title">Adding a sensor to the current deployment.</h4>
+            </div>
+            <div class="modal-body">
+                <form #f="ngForm"  novalidate>
+                    <div class="form-group">
+                        <label for="txtDevice" class="control-label">Sensor Name </label><br/>
+                        <input name="sensor_name" ngModel required #sensor_name="ngModel">
+                        <!---<input type="text" class="form-control" ng-model="info.name" id="txtDevice">-->
+                    </div>
+                    <div class="form-group">
+                        <label for="txtIP" class="control-label">Sensor Location</label><br/>
+                        <input name="location" ngModel required #location="ngModel">
+                        <!---<input type="text" class="form-control" formControlName="lastName" required>
+                        <input type="text" class="form-control" ng-model="info.location" id="txtIP">-->
+                    </div>
+                    <div class="form-group">
+                        <label for="txtmeasurement" class="control-label">Important Measurement</label><br/>
+                        <input name="important_measurement" ngModel required #important_measurement="ngModel">
+                        <!---<input type="text" class="form-control" ng-model="info.name" id="txtDevice">-->
+                    </div>
+                    <div *ngFor="let key of keys; let in=index" class="col-sm-3">
+                        <div class="form-group" >
+
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <div  class="input-group-text">
+                                    <i class="material-icons" (click)="deleteFieldValue(in)">close</i>
+                                  </div>
+                                </div>
+                                <input type="text" [(ngModel)]="keys[in].value" name="name_1{{in}}"  #name="ngModel" required />
+                                <input type="text" [(ngModel)]="values[in].value" name="name_2{{in}}"  #name="ngModel" required />
+                                                           
+                              </div> 
+
+                          <!--<p [hidden]="words2[in].value">Field is required</p>
+                          {{formRef.form.name1}}-->
+                        </div>
+                    </div>
+                  <button class="btn btn-light btn-sm" [disabled]="!f.form.valid" (click)="add_1()">Add</button>
+                                         </form>
+                      </div>
+                  <div class="modal-footer">
+                          <!---<button class="btn btn-danger" title="delete task" (click)="delete(task)">Delete</button>-->
+                          <button class="btn btn-success" (click)="onSubmitfunc(f)">Submit</button>
+                          <button type="button" class="btn btn-default" (click)="onSaveCloseHandled()" >Close</button>
+                    
+                        </div>
+                      </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                  </div><!-- /.modal -->
+           
+                
+                 
+              </tr>
+              </table>
+
+
+<button type="button" class= "btn btn-primary btn-md btn-block" (click)="openModal()">Add a deployment</button> <br/>
+<div class="backdrop" [ngStyle]="{'display':display}"
+></div>
+<div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display}" style="overflow-y: auto; max-height:700px;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!---<button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>-->
+        <h4 class="modal-title">Add Deployment Details</h4>
+      </div>
+      <div class="modal-body">
+        <form #f="ngForm"  novalidate>
+            <div class="form-group">
+                <label for="txtDevice" class="control-label">Deployment Name (If not provided a random ID will be displayed.) </label><br/>
+                <input name="Deployment_name" ngModel required #Deployment_name="ngModel">
+                <!---<input type="text" class="form-control" ng-model="info.name" id="txtDevice">-->
+            </div>           
+       
+        <div *ngFor="let key of keys; let in=index" class="col-sm-3">
+            <div class="form-group" >
+
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div  class="input-group-text">
+                        <i class="material-icons" (click)="deleteFieldValue(in)">close</i>
+                      </div>
+                    </div>
+                    <input type="text" [(ngModel)]="keys[in].value" name="name_1{{in}}"  #name="ngModel" required />
+                    <input type="text" [(ngModel)]="values[in].value" name="name_2{{in}}"  #name="ngModel" required />
+                                               
+                  </div> 
+
+              <!--<p [hidden]="words2[in].value">Field is required</p>
+              {{formRef.form.name1}}-->
+            </div>
+        </div>
+      <button class="btn btn-light btn-sm"  [disabled]="!f.form.valid" (click)="add_1()">Add</button>
+    </form>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-success" (click)="onSubmit(f)">Done</button>
+ 
+        <button type="button" class="btn btn-default" (click)="onCloseHandled()" >Close</button>
+ 
+
+
+  
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal !-->
+
+  <button type="button" class="btn btn-danger bt-lg btn-block" (click)="openDeleteDModal()" >Delete a deployment</button>
+
+<div class="backdrop" [ngStyle]="{'display':display2}"></div>
+<div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display2}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!---<button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>-->
+        <h4 class="modal-title">Are you sure you want to delete a deployment?</h4>
+      </div>
+      <div class="modal-body">
+
+          <div class="form-group">
+          <label for="inputdefault" >Select the deployment you wish to delete.</label>
+           <div class="col-sm-10">
+      
+              <select class="form-control" id="inputdefault" name = "portal" #portalSelect>
+                  <option *ngFor="let c of tasks">{{c.metadata.Deployment_name}}: {{c._id}}</option>
+              </select>
+          </div>
+      </div>
+
+      <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+              <button type="button" class="btn btn-primary" (click)="delete(portalSelect.value)">Delete</button>                    
+              <button type="button" class="btn btn-default" (click)="onDeleteDCloseHandled()" >Close</button>
+          </div>
+      </div>
+      
+              
+                  </div>
+                </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+   
+
+
+

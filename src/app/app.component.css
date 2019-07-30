@@ -1,0 +1,55 @@
+.backdrop{ 
+
+
+    background-color:rgba(0,0,0,0.6);
+    
+    
+    position:fixed;
+    
+    
+    top:0;
+    
+    
+    left:0;
+    
+    
+    width:100%;
+    
+    
+    height:100vh;
+    
+    
+    }
+
+    .nested {
+        background: red;
+        height: 2rem;
+        width: 5rem;
+      }
+
+      .expandcollapse-item {
+        overflow: hidden;
+        border-top:1px solid blue;
+      }
+      
+      .expandcollapse-heading-collapsed {
+        cursor: pointer;
+        padding: 15px 20px;
+        position: relative;
+        z-index: 100000000;
+        color: black; 
+        background-color: white;
+      
+      }
+      
+      .expandcollapse-item:first-of-type {
+        border-top:0px;
+      }
+      
+      
+      .expandcollapse-heading-collapsed h4{
+        font-size: 16px;
+        font-weight: normal;
+        margin:0px;
+      }
+  
