@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, Injectable } from '@angular/core'
 import { Task } from './task'
 import { TasksService } from './tasks.service'
 import { HttpClient } from '@angular/common/http'
@@ -17,13 +17,32 @@ import {
     FormBuilder,
 } from '@angular/forms';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { ValueTransformer } from '@angular/compiler/src/util';
+import { ValueTransformer, stringify } from '@angular/compiler/src/util';
+import { Observable } from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
 
-export interface Metadata {
-    value: string;
-    viewValue: string;
+// @Injectable({
+//     providedIn: 'root'
+// })
+// export class Service {
+
+//     jokes = [];
+
+//     getData() {
+//         return this.jokes.length ? of(this.jokes)
+//             : this.options.pipe(
+//                 map((data) => {
+//                     this.jokes = data.value;
+//                     return this.jokes;
+//                 })
+//             )
+//     }
+// }
+
+class Metadata{
+    name: string;
+    dataType: string;
 }
-
 @Component({
     selector: 'app-tasks',
     templateUrl: './tasks.component.html',
@@ -63,10 +82,6 @@ export class TasksComponent implements OnInit {
     update_keys = []
     update_values = []
    
-    myform: FormGroup;
-  firstName: FormControl;
-  lastName: FormControl;
-  email: FormControl;
   isCollapsed = true
   jsonData: any;
   expandedIndex = -1  
@@ -84,11 +99,29 @@ export class TasksComponent implements OnInit {
   firstFieldName = 'First Item name';
   isEditItems: boolean;
 
+//   options: string[] = [
+//     "Model ID",
+//     "Deployment Start date",
+//     "Deployment End date"
+//   ];
+//   optionsSensor: string[] = [
+//     "Calibration Procedure",
+//     "Environment/Location ID"
+//   ];
   options: Metadata[] = [
-    {value: 'steak-0', viewValue: 'Steak'},
-    {value: 'pizza-1', viewValue: 'Pizza'},
-    {value: 'tacos-2', viewValue: 'Tacos'}
+    {name: "Model ID", dataType: "string"},
+    {name: "Deployment Start date", dataType: "date"},
+    {name: "Deployment End date", dataType: "date"}
   ];
+  optionsSensor: Metadata[] = [
+    {name: "Calibration Procedure", dataType: "string"},
+    {name: "Environment/Location ID", dataType: "string"}
+  ];
+
+  filteredOptions: Observable<string[]>;
+  filteredOptionsSensor: Observable<string[]>;
+
+  myControl = new FormControl();
 
 
     constructor(private taskService: TasksService, private http: HttpClient) { var vm = this; vm.info = {}}
@@ -98,12 +131,33 @@ export class TasksComponent implements OnInit {
         //this.createFormControls();
         //this.createForm();
         //console.log(this.getTasks())
+        this.filteredOptions = this.myControl.valueChanges.pipe(startWith(''),map(value => this._filter(value, false)));
+        this.filteredOptionsSensor = this.myControl.valueChanges.pipe(startWith(''),map(value => this._filter(value, true)));
 
         this.getTasks()
+
+        
     }
+
+    private toStrArr(metArr: Metadata[]){
+        var strArr = [];
+        metArr.forEach(element => {
+            strArr.push(element.name);
+        });
+        return strArr;
+    }
+
+    private _filter(value: string, isSensor: boolean): string[] {
+        const filterValue = value.toLowerCase();
+        if (isSensor){
+            return this.toStrArr(this.optionsSensor).filter(option => option.toLowerCase().includes(filterValue));
+        }else{
+            return this.toStrArr(this.options).filter(option => option.toLowerCase().includes(filterValue));
+        }
+    }
+
     onCloseHandled(){
         this.display='none';
-
     }
 
     openAll()
@@ -136,9 +190,16 @@ export class TasksComponent implements OnInit {
 
      onAddMetadataCloseHandled(){
          this.display7 = 'none';
+         this.keys.splice(0)
+         this.values.splice(0)
+
+
      }
      onAddMetadataSensCloseHandled(){
          this.display8 = 'none';
+         this.keys.splice(0)
+         this.values.splice(0)
+
      }
      onDeleteCloseHandled(){
         this.display1='none';

@@ -5,7 +5,8 @@ import { HttpModule } from '@angular/http'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http'
 
-import { MatFormFieldModule} from '@angular/material/form-field';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule, MatMenuModule } from '@angular/material'
 import { MatInputModule } from '@angular/material';
 import { MatButtonModule } from "@angular/material/button";
@@ -19,7 +20,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap'
 @NgModule({
   declarations: [
     AppComponent,
-    TasksComponent
+    TasksComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -29,7 +30,10 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap'
     NgbModule,
     ReactiveFormsModule,
     NgxJsonViewerModule,
-    MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatMenuModule,
+
+    MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatMenuModule, 
+    MatAutocompleteModule,
+
     DropdownModule, // <--- HERE
     HttpClientModule
   ],

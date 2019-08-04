@@ -15,7 +15,7 @@
           <ul>
               <li *ngFor="let item of getKeys(task.metadata);"><span class="key">{{item}}</span><span class="value">{{getValue(task.metadata[item])}}</span></li>
               <!---<li *ngFor="let item of getKeys(task.metadata);">{{item}}: {{getValue(task.metadata[item])}}</li>-->
-              <li><button type="button" class="btn btn-light btn-sm" (click)="addMetadata(task._id)">Add metadata</button></li>
+              <li><button type="button" class="btn btn-light btn-sm" (click)="addMetadata(task._id); add_1()">Add metadata</button></li>
 
               <div class="backdrop" [ngStyle]="{'display':display7}"></div>
         <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display7}">
@@ -26,19 +26,31 @@
                 <h4 class="modal-title">Adding metadata</h4>
               </div>
               <div class="modal-body">
-                  <form #f="ngForm"  novalidate>
+                  <form #f="ngForm"  novalidate autocomplete="on">
                   <div *ngFor="let key of keys; let in=index" class="col-sm-3">
                       <div class="form-group" >
 
                           <div class="input-group">
                               <div class="input-group-prepend">
-                                <div  class="input-group-text">
+                                <div class="input-group-text" style="background-color: transparent">
                                   <i class="material-icons" (click)="deleteFieldValue(in)">close</i>
+                                  <mat-form-field class="metadata-key">
+                                    <input matInput  type="text" style="color:black" [(ngModel)]="keys[in].value" name="name_1{{in}}" placeholder="Key"
+                                     [matAutocomplete]="auto" [formControl]="myControl" />
+                                    <mat-autocomplete #auto="matAutocomplete">
+                                      <mat-option *ngFor="let option of filteredOptions | async" [value]="option" style="color:black; font-size: small">
+                                        {{option}}
+                                      </mat-option>
+                                    </mat-autocomplete>
+                                    
+                                    <!-- <input matInput type="text" [(ngModel)]="keys[in].value" name="name_1{{in}}"  #name="ngModel" placeholder="Key"/> -->
+                                  </mat-form-field>
+                                  <mat-form-field class="metadata-value">
+                                    <input matInput type="text" style="color:black" [(ngModel)]="values[in].value" name="name_2{{in}}"  #name="ngModel" placeholder="Value"/>  
+                                  </mat-form-field>
                                 </div>
                               </div>
-                              <input type="text" [(ngModel)]="keys[in].value" name="name_1{{in}}"  #name="ngModel" required />
-                              <input type="text" [(ngModel)]="values[in].value" name="name_2{{in}}"  #name="ngModel" required />
-                                                         
+                                                                                       
                             </div>                          
                        <!--<label class="control-label"> Key: </label> <input type="text" [(ngModel)]="keys[in].value" name="name_1{{in}}"  #name="ngModel" required />
                        <label class="control-label"> Value: </label> <input type="text" [(ngModel)]="values[in].value" name="name_2{{in}}"  #name="ngModel" required />
@@ -48,14 +60,14 @@
                         {{formRef.form.name1}}-->
                       </div>
                   </div>
-                <button  class="btn btn-light btn-sm" (click)="add_1()">Add</button>
+                <i  class="material-icons" (click)="add_1()">add</i>
                 </form>
                                        
                 </div>
                       
                     <div class="modal-footer">
                             <!---<button class="btn btn-danger" title="delete task" (click)="delete(task)">Delete</button>-->
-                            <button class="btn btn-success" (click)="onAddMetadatafunc(f)">Add</button>
+                            <button type="submit" class="btn btn-success" (click)="onAddMetadatafunc(f)">Add</button>
                             <button type="button" class="btn btn-default" (click)="onAddMetadataCloseHandled()" >Close</button>
                         </div><!-- /.modal-content -->
                       </div><!-- /.modal-dialog -->
@@ -89,7 +101,7 @@
                 <li><span class="key" >Location</span><span class="value"  >{{sensor.value.location}}</span></li>
                 <li><span class="key">Important measurement</span><span class="value" >{{sensor.value.important_measurement}}</span></li>
                 <li *ngFor="let item of getKeys(sensor.value);"><span class="key">{{item}}</span><span class="value">{{getValue(sensor.value[item])}}</span></li>
-                <li><button type="button" class="btn btn-light btn-sm" (click)="addMetadataSens(sensor.key, task._id)">Add metadata</button></li>
+                <li><button type="button" class="btn btn-light btn-sm" (click)="addMetadataSens(sensor.key, task._id); add_1()">Add metadata</button></li>
                 <!---<li style="color:cadetblue" *ngFor="let item of getKeys(sensor.value);">{{item}}
                                     : {{getValue(sensor.value[item])}}</li>-->
                   <div class="backdrop" [ngStyle]="{'display':display8}"></div>
@@ -110,16 +122,18 @@
                                           <div  class="input-group-text" style="background-color: transparent">
                                             <i class="material-icons" (click)="deleteFieldValue(in)">close</i>
                                             <mat-form-field class="metadata-sensor-key">
-                                              <mat-select>
-                                                <mat-option *ngFor="let option of options" [value]="option.value">
-                                                  {{option.viewValue}}
+                                              <input matInput [formControl]="myControl" type="text" style="color:black"  [(ngModel)]="keys[in].value" name="name_1{{in}}" placeholder="Key" [matAutocomplete]="auto"/>
+
+                                              <mat-autocomplete #auto="matAutocomplete">
+                                                <mat-option *ngFor="let option of filteredOptionsSensor | async" [value]="option" style="color:black; font-size: small">
+                                                  {{option}}
                                                 </mat-option>
-                                              </mat-select>
+                                              </mat-autocomplete>
                                               
-                                              <input matInput type="text" [(ngModel)]="keys[in].value" name="name_1{{in}}"  #name="ngModel" placeholder="Key"/>
+                                              <!-- <input matInput type="text" [(ngModel)]="keys[in].value" name="name_1{{in}}"  #name="ngModel" placeholder="Key"/> -->
                                             </mat-form-field>
                                             <mat-form-field class="metadata-sensor-value">
-                                              <input matInput type="text" [(ngModel)]="values[in].value" name="name_2{{in}}"  #name="ngModel" placeholder="Value"/>  
+                                              <input matInput type="text" [(ngModel)]="values[in].value" name="name_2{{in}}"  #name="ngModel" placeholder="Value" style="color:black"/>  
                                             </mat-form-field>
 
                                       </div>
@@ -137,14 +151,14 @@
                                   {{formRef.form.name1}}-->
                                 </div>
                             </div>
-                          <button  class="btn btn-light btn-sm" (click)="add_1()">Add</button>
+                            <i  class="material-icons" (click)="add_1()">add</i>
                           </form>
                                                   
                           </div>
                                 
                               <div class="modal-footer">
                                       <!---<button class="btn btn-danger" title="delete task" (click)="delete(task)">Delete</button>-->
-                                      <button class="btn btn-success" (click)="onAddMetadataSensFunc(f)">Add</button>
+                                      <button type="submit" class="btn btn-success" (click)="onAddMetadataSensFunc(f)">Add</button>
                                       <button type="button" class="btn btn-default" (click)="onAddMetadataSensCloseHandled()" >Close</button>
                                   </div><!-- /.modal-content -->
                                 </div><!-- /.modal-dialog -->
@@ -184,9 +198,16 @@
                          <input type="text" class="form-control" ng-model="info.name" id="txtDevice">-->
                       </div>
                       <div class="form-group" *ngFor="let key of update_keys; let in=index" >
-                          <label for="txtIP" class="control-label">{{update_keys[in]}}</label><br/>
-                          <input type = "text" name="{{update_keys[in]}}" ngModel required #update_key[in]="ngModel"  dynamic-name   placeholder = "{{update_values[in]}}" />
+                          <!-- <label for="txtIP" class="control-label">{{update_keys[in]}}</label><br/> -->
+                          <!-- <input type = "text" name="{{update_keys[in]}}" ngModel required #update_key[in]="ngModel"  dynamic-name   placeholder = "{{update_values[in]}}" /> -->
                           
+                          <mat-form-field class="update-sensor-data" floatLabel="always" appearance="outline">
+                            <mat-label for="txtIP" class="control-label">{{update_keys[in]}}</mat-label>
+                            <input matInput type = "text" name="{{update_keys[in]}}" ngModel #update_key[in]="ngModel"  
+                              placeholder = "{{update_values[in]}}"/>
+                          </mat-form-field>
+                          <!-- <input matInput ngControl="myControl" type="text" style="color:black"  [(ngModel)]="{{update_keysin]}}" name="{{update_keys[in]}}"  #name="ngModel" placeholder="{{update_values[in]}}"/> -->
+
                           <!---<input type="text" class="form-control" formControlName="lastName" required>
                           <input type="text" class="form-control" ng-model="info.location" id="txtIP">-->
                       </div>
@@ -201,7 +222,7 @@
                         <div *ngIf="show" >
 
                           Show the metadata for the sensor to update.</div>-->
-                          <button class="btn btn-success">Update</button>
+                          <button type="submit" class="btn btn-success" (click)="onUpdateCloseHandled()">Update</button>
                         </form>
                         </div>
                     <div class="modal-footer">

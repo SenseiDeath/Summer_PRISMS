@@ -184,8 +184,19 @@ def update_task(uid,sid):
     #print(sensor_name.strip())
     #print(sensor_id)
     print(sid)
-   
-    tasks.update({'_id' :ObjectId(uid)}, {'$set': {'sensors'+'.'+str(sid):sensor_data}},  upsert=True)
+    sensor_data = {key: value for key, value in sensor_data.items() if value != ''}
+    sensor_data = {key: value for key, value in sensor_data.items() if value != None}
+
+    get = tasks.find({'_id':ObjectId(uid)},{"sensors":1, "_id":0})
+    #
+    for element in get:
+        dict1 = element['sensors'][str(sid)]
+
+
+
+    dict1.update(sensor_data)
+
+    tasks.update({'_id' :ObjectId(uid)}, {'$set': {'sensors'+'.'+str(sid):dict1}},  upsert=True)
     #tasks.update({'_id': ObjectId(uid)}, {'$set': {"sensors"+'.'+'$[]'+'.'+sid+'.name': sensor_name}}, upsert=True)
     #tasks.update({'_id': ObjectId(uid)}, {'$set': {"sensors"+'.'+'$[]'+'.'+sid+'.location': sensor_location}}, upsert=True)
     #tasks.update({'_id': ObjectId(uid)}, {'$set': {"sensors"+'.'+'$[]'+'.'+sid+'.important_measurement': important_measurement}}, upsert=True)

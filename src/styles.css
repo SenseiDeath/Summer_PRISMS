@@ -1,5 +1,4 @@
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
-
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
 /* You can add global styles to this file, and also import other style files */
 .deployment-title {
     margin-bottom: 5px;
@@ -10,7 +9,10 @@
 .material-icons{
     padding-right: 40px;
 }
-
+.cdk-global-overlay-wrapper, .cdk-overlay-container {
+    z-index: 99999 !important;
+ }
+ 
 span.deployment-id {
     color: grey;
     font-size: 1em;
